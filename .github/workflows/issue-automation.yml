@@ -1,0 +1,56 @@
+name: Issue Label Automation
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  comment-on-labeled-issue:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Check for bug label
+        if: contains(github.event.issue.labels.*.name, 'bug')
+        run: |
+          echo "Bug issue detected"
+      - name: Check for feature label
+        if: contains(github.event.issue.labels.*.name, 'feature')
+        run: |
+          echo "Feature issue detected"
+      - name: Check for discussion label
+        if: contains(github.event.issue.labels.*.name, 'discussion')
+        run: |
+          echo "Discussion issue detected"
+      - name: Add comment for bug label
+        if: contains(github.event.issue.labels.*.name, 'bug')
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Thank you. We will fix it."
+            })
+      - name: Add comment for feature label
+        if: contains(github.event.issue.labels.*.name, 'feature')
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Thank you, we will consider to include this feature."
+            })
+      - name: Add comment for discussion label
+        if: contains(github.event.issue.labels.*.name, 'discussion')
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Thanks for starting this discussion! We welcome community input."
+            })
