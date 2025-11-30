@@ -1,6 +1,7 @@
 #![doc = include_str!("../README.md")]
 
 pub mod chat;
+mod concurrent_loading;
 mod encoding;
 mod registry;
 mod tiktoken;
